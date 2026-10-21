@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>platier</title>
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#14202b">
+<link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="vendor/leaflet.css"><link rel="stylesheet" href="style.css">
+</head><body>
+<div id="map"></div>
+<aside id="panel">
+<h1>platier <small>aide à l'interprétation de l'estran</small></h1>
+
+<details open><summary>1 · Zone d'étude</summary>
+<label>Fond de carte <select id="base"><option value="plan">IGN Plan V2</option><option value="ortho">IGN BD Ortho</option><option value="osm">OpenStreetMap</option></select></label>
+<div class="row"><button id="zdraw">Tracer le secteur</button><button id="zend">Terminer</button><button id="zclr">Effacer</button></div>
+<p id="zinfo">Polygone : longueur max 1500 m, estran ± 100 m de part et d'autre.</p>
+</details>
+
+<details id="s2" class="lock" open><summary>2 · MNT LiDAR HD ombré</summary><div id="s2b"></div><p id="st"></p></details>
+
+<details id="s3" class="lock" open><summary>3 · Interprétation géologique</summary>
+<div class="row"><input id="gname" placeholder="Entité (silex, faille…)"><button id="gadd">+ Couche</button></div>
+<div id="glist"></div>
+<label>Forme <select id="gmode"><option value="line">Ligne</option><option value="poly">Polygone</option></select></label>
+<label>Couleur <input type="color" id="gcol" value="#ff3b30"></label>
+<div id="s3b"></div>
+<div class="row"><button id="gdraw">Dessiner</button><button id="gend">Terminer</button><button id="gclr">Effacer</button></div>
+</details>
+
+<details id="s4" class="lock" open><summary>4 · Export (zone restreinte)</summary>
+<label>Format <select id="efmt"><option value="gpkg">GeoPackage</option><option value="mbtiles">MBTiles</option></select></label>
+<div class="radios">
+<label><input type="radio" name="view" value="ortho" checked> BD Ortho</label>
+<label><input type="radio" name="view" value="mnt"> MNT ombré</label>
+<label><input type="radio" name="view" value="geo"> Géologie</label>
+<label><input type="radio" name="view" value="synth"> Synthèse</label></div>
+<div id="synth" hidden></div>
+<label class="inl"><input type="checkbox" id="png"> Tuiles PNG (transparence hors zone, plus lourd)</label>
+<button id="exp">Exporter</button><progress id="prog" max="1" value="0" hidden></progress>
+</details>
+</aside>
+<div id="toast" hidden></div>
+
+<script src="vendor/leaflet.js"></script>
+<script src="vendor/geotiff.js"></script>
+<script src="vendor/sql-wasm.js"></script>
+<script src="app.js"></script>
+<script>
+if('serviceWorker' in navigator){
+  const had=!!navigator.serviceWorker.controller; let r=0;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had&&!r){r=1;location.reload();}});
+  navigator.serviceWorker.register('sw.js').then(g=>g.update());
+}
+</script>
+</body></html>
